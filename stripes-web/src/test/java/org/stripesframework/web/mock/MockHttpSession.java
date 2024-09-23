@@ -14,9 +14,11 @@
  */
 package org.stripesframework.web.mock;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -49,8 +51,8 @@ public class MockHttpSession implements HttpSession {
    public Object getAttribute( String key ) { return _attributes.get(key); }
 
    @Override
-   public Object getValue( String s ) {
-      return null;
+   public Object getValue( String name ) {
+      return getAttribute(name);
    }
 
    /** Returns an enumeration of all the attribute names in the session. */
@@ -61,7 +63,9 @@ public class MockHttpSession implements HttpSession {
 
    @Override
    public String[] getValueNames() {
-      return new String[0];
+      List<String> names = new ArrayList<>();
+      getAttributeNames().asIterator().forEachRemaining(names::add);
+      return names.toArray(String[]::new);
    }
 
    /** Returns the time in milliseconds when the session was created. */
@@ -104,8 +108,8 @@ public class MockHttpSession implements HttpSession {
    }
 
    @Override
-   public void removeValue( String s ) {
-
+   public void removeValue( String name ) {
+      removeAttribute(name);
    }
 
    /** Stores the value in session, replacing any existing value with the same key. */
@@ -115,8 +119,8 @@ public class MockHttpSession implements HttpSession {
    }
 
    @Override
-   public void putValue( String s, Object o ) {
-
+   public void putValue( String name, Object value ) {
+      setAttribute(name, value);
    }
 
    /** Has no effect. */
